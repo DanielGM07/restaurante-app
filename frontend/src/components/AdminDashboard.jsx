@@ -1,6 +1,11 @@
+import { useState } from "react";
 import Header from "./Header";
+import AdminProducts from "./AdminProducts";
+import AdminCategories from "./AdminCategories";
 
 function AdminDashboard({ user, onLogout }) {
+  const [activeTab, setActiveTab] = useState("products");
+
   return (
     <div className="app-shell">
       <Header
@@ -13,11 +18,39 @@ function AdminDashboard({ user, onLogout }) {
       <div className="app-body admin-body">
         <main className="main-panel admin-panel">
           <section className="panel-section">
-            <h2 className="section-title">Panel de administración</h2>
-            <p className="empty-text">
-              Estás logueado como <strong>{user.role}</strong>.  
-              Acá después vamos a agregar gestión de productos, categorías y pedidos.
-            </p>
+            <div className="admin-header-row">
+              <h2 className="section-title">Panel de administración</h2>
+              <span className="admin-role-pill">{user.role}</span>
+            </div>
+
+            <div className="admin-tabs">
+              <button
+                className={
+                  "admin-tab" +
+                  (activeTab === "products" ? " active" : "")
+                }
+                onClick={() => setActiveTab("products")}
+              >
+                Productos
+              </button>
+              <button
+                className={
+                  "admin-tab" +
+                  (activeTab === "categories" ? " active" : "")
+                }
+                onClick={() => setActiveTab("categories")}
+              >
+                Categorías
+              </button>
+            </div>
+
+            <div className="admin-content">
+              {activeTab === "products" ? (
+                <AdminProducts userId={user.id} />
+              ) : (
+                <AdminCategories userId={user.id} />
+              )}
+            </div>
           </section>
         </main>
       </div>

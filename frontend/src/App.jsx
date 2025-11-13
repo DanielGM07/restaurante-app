@@ -23,7 +23,6 @@ function App() {
   };
 
   if (!user) {
-    // nadie logueado
     return (
       <div className="app-root">
         <LoginPage onLogin={handleLogin} />
@@ -31,7 +30,6 @@ function App() {
     );
   }
 
-  // 👇 si es admin, va al panel admin
   if (user.role === "ADMIN") {
     return (
       <div className="app-root">
@@ -40,7 +38,6 @@ function App() {
     );
   }
 
-  // si no es admin, asumimos CUSTOMER
   return (
     <div className="app-root">
       <RestaurantPage user={user} onLogout={handleLogout} />

@@ -473,3 +473,150 @@ body {
     min-height: auto;
   }
 }
+
+/* ---------- ADMIN PANEL ---------- */
+
+.admin-body {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-panel {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.admin-role-pill {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  color: var(--text-muted);
+}
+
+.admin-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 2px;
+  background: #020617;
+  border-radius: 999px;
+  border: 1px solid rgba(31, 41, 55, 0.9);
+  margin-bottom: 12px;
+}
+
+.admin-tab {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.admin-tab.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.admin-content {
+  margin-top: 4px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.8fr);
+  gap: 16px;
+}
+
+.admin-grid.single-column {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-column {
+  background: #020617;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(31, 41, 55, 0.9);
+  padding: 12px 14px;
+}
+
+.admin-subtitle {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.inline-form {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+}
+
+.admin-table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.admin-table-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.admin-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+}
+
+.admin-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+}
+
+.form-group.grow {
+  flex: 1;
+}
+
+textarea {
+  resize: vertical;
+}
