@@ -26,8 +26,13 @@ try {
 
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
-    $stmt->execute([$name, $email, $passwordHash]);
+    // 👇 siempre se crea como CUSTOMER
+    $role = "CUSTOMER";
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)"
+    );
+    $stmt->execute([$name, $email, $passwordHash, $role]);
 
     echo json_encode(["message" => "Usuario registrado correctamente"]);
 } catch (PDOException $e) {
