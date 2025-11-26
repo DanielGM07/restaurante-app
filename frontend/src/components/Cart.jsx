@@ -1,4 +1,45 @@
-function Cart({ items, total, onChangeQuantity, onCheckout }) {
+import React from "react";
+import { API_URL } from "../api"; // 👈 IMPORTANTE: nuevo import
+
+function Cart({ items, total, onChangeQuantity, user }) {
+  const handleCheckout = async () => {
+    try {
+      // 👇 Transformamos tus items al formato que espera el backend/Node/MP
+      const mpItems = items.map((item) => ({
+        title: item.name,          // nombre del producto
+        quantity: item.quantity,   // cantidad
+        unit_price: item.price,    // precio unitario
+        currency_id: "ARS",        // moneda
+      }));
+
+      const res = await fetch(`${API_URL}/create_order.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // user_id va si querés usarlo más adelante en el backend, pero el flujo de MP usa principalmente items
+        body: JSON.stringify({ user_id: user.id, items: mpItems }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Error desde create_order.php:", data);
+        alert(data.error || "Error al iniciar el pago");
+        return;
+      }
+
+      if (data.init_point) {
+        // Redirigimos al Checkout Pro de Mercado Pago
+        window.location.href = data.init_point;
+      } else {
+        console.error("No se recibió init_point:", data);
+        alert("No se recibió la URL de pago");
+      }
+    } catch (err) {
+      console.error("Error al iniciar pago:", err);
+      alert("Ocurrió un error al iniciar el pago");
+    }
+  };
+
   const hasItems = items && items.length > 0;
 
   return (
@@ -58,7 +99,7 @@ function Cart({ items, total, onChangeQuantity, onCheckout }) {
             <button
               type="button"
               className="primary-btn full-width"
-              onClick={onCheckout}
+              onClick={handleCheckout}
             >
               Pagar
             </button>

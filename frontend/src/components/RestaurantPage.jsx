@@ -10,7 +10,6 @@ function RestaurantPage({ user, onLogout }) {
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-  const [message, setMessage] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // categorías
@@ -75,27 +74,7 @@ function RestaurantPage({ user, onLogout }) {
     );
   };
 
-  const checkout = async () => {
-    if (!cart.length) return;
-    setMessage("");
-
-    try {
-      const res = await fetch(`${API_URL}/create_order.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user.id, items: cart }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Error al crear pedido");
-
-      setCart([]);
-      setMessage(`Pedido #${data.order_id} creado. Total: $${data.total}`);
-    } catch (err) {
-      setMessage(err.message);
-    }
-  };
+  // ⛔️ checkout viejo ELIMINADO: ahora el pago lo maneja Cart con Mercado Pago
 
   const total = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -129,10 +108,9 @@ function RestaurantPage({ user, onLogout }) {
             <Cart
               items={cart}
               total={total}
+              user={user}
               onChangeQuantity={changeQty}
-              onCheckout={checkout}
             />
-            {message && <p className="message-text">{message}</p>}
           </section>
         </main>
       </div>

@@ -25,8 +25,6 @@ try {
     }
 
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
-    // 👇 siempre se crea como CUSTOMER
     $role = "CUSTOMER";
 
     $stmt = $pdo->prepare(

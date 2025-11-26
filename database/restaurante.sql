@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-11-2025 a las 08:22:00
+-- Tiempo de generación: 21-11-2025 a las 04:49:03
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -53,8 +53,26 @@ CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `total` decimal(10,2) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` varchar(50) NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `orders`
+--
+
+INSERT INTO `orders` (`id`, `user_id`, `total`, `created_at`, `status`) VALUES
+(1, 1, 1500.00, '2025-11-21 02:49:52', 'pending'),
+(2, 1, 1000.00, '2025-11-21 03:23:29', 'pending'),
+(3, 1, 1000.00, '2025-11-21 03:25:38', 'pending'),
+(4, 1, 1000.00, '2025-11-21 03:26:14', 'pending'),
+(5, 1, 1000.00, '2025-11-21 03:28:57', 'pending'),
+(6, 1, 1000.00, '2025-11-21 03:29:20', 'pending'),
+(7, 1, 1000.00, '2025-11-21 03:29:41', 'pending'),
+(8, 1, 100.00, '2025-11-21 03:31:29', 'pending'),
+(9, 1, 100.00, '2025-11-21 03:42:32', 'pending'),
+(10, 1, 100.00, '2025-11-21 03:45:49', 'pending'),
+(11, 1, 100.00, '2025-11-21 03:47:17', 'pending');
 
 -- --------------------------------------------------------
 
@@ -69,6 +87,23 @@ CREATE TABLE `order_items` (
   `quantity` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`) VALUES
+(1, 1, 1, 1, 1500.00),
+(2, 2, 4, 1, 1000.00),
+(3, 3, 4, 1, 1000.00),
+(4, 4, 4, 1, 1000.00),
+(5, 5, 4, 1, 1000.00),
+(6, 6, 4, 1, 1000.00),
+(7, 7, 4, 1, 1000.00),
+(8, 8, 4, 1, 100.00),
+(9, 9, 4, 1, 100.00),
+(10, 10, 4, 1, 100.00),
+(11, 11, 4, 1, 100.00);
 
 -- --------------------------------------------------------
 
@@ -93,7 +128,7 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `description`, `price`, `im
 (1, 1, 'Bruschetta', 'Pan tostado con tomate y albahaca', 1500.00, NULL),
 (2, 2, 'Milanesa con papas fritas', 'Clásica milanesa de carne', 4500.00, NULL),
 (3, 3, 'Flan con dulce de leche', 'Flan casero', 2000.00, NULL),
-(4, 4, 'Gaseosa 500ml', 'Distintas variedades', 1200.00, NULL);
+(4, 4, 'Gaseosa 500ml', 'Distintas variedades', 100.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -171,13 +206,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT de la tabla `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `products`

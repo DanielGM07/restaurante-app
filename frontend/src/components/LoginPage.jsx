@@ -40,6 +40,7 @@ function LoginPage({ onLogin }) {
 
       onLogin(data.user);
     } catch (ex) {
+      console.log(ex);
       setError(ex.message);
     }
   };
