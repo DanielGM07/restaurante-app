@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "./Header";
 import AdminProducts from "./AdminProducts";
 import AdminCategories from "./AdminCategories";
+import AdminMetrics from "./AdminMetrics";
 
 function AdminDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState("products");
@@ -42,13 +43,26 @@ function AdminDashboard({ user, onLogout }) {
               >
                 Categorías
               </button>
+              <button
+                className={
+                  "admin-tab" +
+                  (activeTab === "metrics" ? " active" : "")
+                }
+                onClick={() => setActiveTab("metrics")}
+              >
+                Métricas
+              </button>
             </div>
 
             <div className="admin-content">
-              {activeTab === "products" ? (
+              {activeTab === "products" && (
                 <AdminProducts userId={user.id} />
-              ) : (
+              )}
+              {activeTab === "categories" && (
                 <AdminCategories userId={user.id} />
+              )}
+              {activeTab === "metrics" && (
+                <AdminMetrics userId={user.id} />
               )}
             </div>
           </section>

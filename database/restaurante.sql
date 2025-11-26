@@ -54,7 +54,8 @@ CREATE TABLE `orders` (
   `user_id` int(11) NOT NULL,
   `total` decimal(10,2) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `status` varchar(50) NOT NULL DEFAULT 'pending'
+  `status` varchar(50) NOT NULL DEFAULT 'pending',
+  `payment_method` varchar(50) NOT NULL DEFAULT 'MERCADO_PAGO'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -117,6 +118,7 @@ CREATE TABLE `products` (
   `name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
+  `stock` int(11) NOT NULL DEFAULT 0,
   `image_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -124,11 +126,11 @@ CREATE TABLE `products` (
 -- Volcado de datos para la tabla `products`
 --
 
-INSERT INTO `products` (`id`, `category_id`, `name`, `description`, `price`, `image_url`) VALUES
-(1, 1, 'Bruschetta', 'Pan tostado con tomate y albahaca', 1500.00, NULL),
-(2, 2, 'Milanesa con papas fritas', 'Clásica milanesa de carne', 4500.00, NULL),
-(3, 3, 'Flan con dulce de leche', 'Flan casero', 2000.00, NULL),
-(4, 4, 'Gaseosa 500ml', 'Distintas variedades', 100.00, NULL);
+INSERT INTO `products` (`id`, `category_id`, `name`, `description`, `price`, `stock`, `image_url`) VALUES
+(1, 1, 'Bruschetta', 'Pan tostado con tomate y albahaca', 1500.00, 10, NULL),
+(2, 2, 'Milanesa con papas fritas', 'Clásica milanesa de carne', 4500.00, 15, NULL),
+(3, 3, 'Flan con dulce de leche', 'Flan casero', 2000.00, 8, NULL),
+(4, 4, 'Gaseosa 500ml', 'Distintas variedades', 100.00, 50, NULL);
 
 -- --------------------------------------------------------
 
@@ -253,3 +255,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

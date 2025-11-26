@@ -6,6 +6,8 @@ const emptyForm = {
   name: "",
   description: "",
   price: "",
+  stock: "",
+  image_url: "",
   category_id: "",
 };
 
@@ -15,6 +17,7 @@ function AdminProducts({ userId }) {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
 
   const loadData = async () => {
@@ -24,8 +27,10 @@ function AdminProducts({ userId }) {
         fetch(`${API_URL}/categories.php`),
         fetch(`${API_URL}/admin_get_products.php?user_id=${userId}`),
       ]);
+
       const cats = await catsRes.json();
       const prods = await prodRes.json();
+
       setCategories(cats);
       setProducts(prods);
     } catch (err) {
@@ -46,12 +51,47 @@ function AdminProducts({ userId }) {
     setForm((f) => ({ ...f, [name]: value }));
   };
 
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setUploading(true);
+      setMessage("");
+
+      const res = await fetch(`${API_URL}/upload_image.php`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Error al subir la imagen");
+      }
+
+      // Guardamos la URL completa (backend + ruta relativa)
+      const fullUrl = `${API_URL}/${data.url}`;
+      setForm((f) => ({ ...f, image_url: fullUrl }));
+      setMessage("Imagen subida correctamente");
+    } catch (err) {
+      console.error(err);
+      setMessage(err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleEdit = (product) => {
     setForm({
       id: product.id,
       name: product.name,
       description: product.description ?? "",
       price: product.price,
+      stock: product.stock ?? "",
+      image_url: product.image_url ?? "",
       category_id: product.category_id,
     });
     setMessage("");
@@ -74,6 +114,7 @@ function AdminProducts({ userId }) {
         body: JSON.stringify({
           ...form,
           price: Number(form.price),
+          stock: Number(form.stock || 0),
           user_id: userId,
         }),
       });
@@ -85,6 +126,7 @@ function AdminProducts({ userId }) {
       setForm(emptyForm);
       await loadData();
     } catch (err) {
+      console.error(err);
       setMessage(err.message);
     } finally {
       setSaving(false);
@@ -106,6 +148,7 @@ function AdminProducts({ userId }) {
       setMessage(data.message || "Producto eliminado");
       await loadData();
     } catch (err) {
+      console.error(err);
       setMessage(err.message);
     }
   };
@@ -142,9 +185,10 @@ function AdminProducts({ userId }) {
             <div className="form-group">
               <label>Precio</label>
               <input
-                name="price"
                 type="number"
+                min="0"
                 step="0.01"
+                name="price"
                 value={form.price}
                 onChange={handleChange}
                 required
@@ -152,21 +196,71 @@ function AdminProducts({ userId }) {
             </div>
 
             <div className="form-group">
-              <label>Categoría</label>
-              <select
-                name="category_id"
-                value={form.category_id}
+              <label>Stock</label>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                name="stock"
+                value={form.stock}
                 onChange={handleChange}
                 required
-              >
-                <option value="">Seleccionar...</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
+          </div>
+
+            <div className="form-group">
+              <label>URL de imagen (generada automáticamente)</label>
+              <input
+                name="image_url"
+                value={form.image_url}
+                placeholder="Subí una imagen para generar la URL"
+                readOnly      // ← no editable
+                style={{
+                  background: "#333",
+                  opacity: 0.7,
+                  cursor: "not-allowed",
+                }}
+              />
+            </div>
+
+          <div className="form-group">
+            <label>Subir imagen</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              disabled={uploading}
+            />
+            {uploading && (
+              <p className="message-text">Subiendo imagen...</p>
+            )}
+            {form.image_url && (
+              <div className="image-preview">
+                <img
+                  src={form.image_url}
+                  alt="Vista previa"
+                  style={{ maxWidth: "150px", marginTop: "8px" }}
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Categoría</label>
+            <select
+              name="category_id"
+              value={form.category_id}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccionar...</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {message && <p className="message-text">{message}</p>}
@@ -205,6 +299,8 @@ function AdminProducts({ userId }) {
                 <th>Nombre</th>
                 <th>Categoría</th>
                 <th>Precio</th>
+                <th>Stock</th>
+                <th>Imagen</th>
                 <th></th>
               </tr>
             </thead>
@@ -214,6 +310,8 @@ function AdminProducts({ userId }) {
                   <td>{p.name}</td>
                   <td>{p.category_name}</td>
                   <td>${Number(p.price).toFixed(2)}</td>
+                  <td>{p.stock}</td>
+                  <td>{p.image_url ? "Sí" : "No"}</td>
                   <td className="admin-table-actions">
                     <button
                       type="button"

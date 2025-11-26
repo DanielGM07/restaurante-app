@@ -1,22 +1,25 @@
 import React from "react";
-import { API_URL } from "../api"; // 👈 IMPORTANTE: nuevo import
+import { API_URL } from "../api";
 
 function Cart({ items, total, onChangeQuantity, user }) {
+  const hasItems = items && items.length > 0;
+
   const handleCheckout = async () => {
+    if (!hasItems) return;
+
     try {
-      // 👇 Transformamos tus items al formato que espera el backend/Node/MP
-      const mpItems = items.map((item) => ({
-        title: item.name,          // nombre del producto
-        quantity: item.quantity,   // cantidad
-        unit_price: item.price,    // precio unitario
-        currency_id: "ARS",        // moneda
+      const payloadItems = items.map((item) => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
       }));
 
       const res = await fetch(`${API_URL}/create_order.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // user_id va si querés usarlo más adelante en el backend, pero el flujo de MP usa principalmente items
-        body: JSON.stringify({ user_id: user.id, items: mpItems }),
+        body: JSON.stringify({
+          user_id: user.id,
+          items: payloadItems,
+        }),
       });
 
       const data = await res.json();
@@ -28,7 +31,6 @@ function Cart({ items, total, onChangeQuantity, user }) {
       }
 
       if (data.init_point) {
-        // Redirigimos al Checkout Pro de Mercado Pago
         window.location.href = data.init_point;
       } else {
         console.error("No se recibió init_point:", data);
@@ -39,8 +41,6 @@ function Cart({ items, total, onChangeQuantity, user }) {
       alert("Ocurrió un error al iniciar el pago");
     }
   };
-
-  const hasItems = items && items.length > 0;
 
   return (
     <section className="cart-card">
@@ -56,19 +56,15 @@ function Cart({ items, total, onChangeQuantity, user }) {
                 <div className="cart-item-main">
                   <span className="cart-item-name">{item.name}</span>
                   <span className="cart-item-unit">
-                    ${item.price.toFixed(2)} c/u
+                    ${Number(item.price).toFixed(2)} c/u
                   </span>
                 </div>
-
-                <div className="cart-item-controls">
+                <div className="cart-item-actions">
                   <button
                     type="button"
-                    className="icon-button"
+                    className="secondary-btn small-btn"
                     onClick={() =>
-                      onChangeQuantity(
-                        item.product_id,
-                        item.quantity - 1
-                      )
+                      onChangeQuantity(item.product_id, item.quantity - 1)
                     }
                   >
                     -
@@ -76,25 +72,25 @@ function Cart({ items, total, onChangeQuantity, user }) {
                   <span className="cart-item-qty">{item.quantity}</span>
                   <button
                     type="button"
-                    className="icon-button"
+                    className="secondary-btn small-btn"
                     onClick={() =>
-                      onChangeQuantity(
-                        item.product_id,
-                        item.quantity + 1
-                      )
+                      onChangeQuantity(item.product_id, item.quantity + 1)
                     }
                   >
                     +
                   </button>
+                  <span className="cart-item-total">
+                    ${Number(item.price * item.quantity).toFixed(2)}
+                  </span>
                 </div>
               </li>
             ))}
           </ul>
 
-          <div className="cart-footer">
-            <div className="cart-total">
-              <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+          <div className="cart-summary">
+            <div className="cart-summary-row">
+              <span>Total </span>
+              <strong>${Number(total).toFixed(2)}</strong>
             </div>
             <button
               type="button"
